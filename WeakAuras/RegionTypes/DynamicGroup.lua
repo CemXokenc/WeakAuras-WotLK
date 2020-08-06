@@ -1024,7 +1024,7 @@ local function modify(parent, region, data)
       self.needToPosition = false
       if #self.sortedChildren > 0 then
         if animate then
-          Private.RegisterGroupForPositioning(data.id, self)
+          Private.RegisterGroupForPositioning(data.uid, self)
         else
           self:DoPositionChildren()
         end
@@ -1043,7 +1043,10 @@ local function modify(parent, region, data)
                           type(pos[2]) == "number" and pos[2] or 0,
                           type(pos[3]) ~= "boolean" and true or pos[3]
 
-      local controlPoint = regionData.controlPoint
+      local controlPoint = type(regionData) == "table" and regionData.controlPoint
+      if not controlPoint then
+        break
+      end
       controlPoint:ClearAnchorPoint()
       controlPoint:SetAnchorPoint(
         data.selfPoint,
@@ -1133,7 +1136,7 @@ local function modify(parent, region, data)
             }
           end
           -- update animated expand & collapse for this child
-          WeakAuras.Animate("controlPoint", data, "controlPoint", anim, regionData.controlPoint, true)
+          WeakAuras.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
         end
       end
       regionData.xOffset = x
